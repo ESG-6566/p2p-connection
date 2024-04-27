@@ -30,6 +30,7 @@
   "dependencies": {
     "@chainsafe/libp2p-noise": "^15.0.0",
     "@libp2p/mplex": "^10.0.21",
-    "@libp2p/tcp": "^9.0.23"
+    "@libp2p/tcp": "^9.0.23",
+    "libp2p": "^1.4.3"
   }
 }
