@@ -30,7 +30,9 @@
   "dependencies": {
     "@chainsafe/libp2p-noise": "^15.0.0",
     "@libp2p/mplex": "^10.0.21",
+    "@libp2p/ping": "^1.0.16",
     "@libp2p/tcp": "^9.0.23",
-    "libp2p": "^1.4.3"
+    "libp2p": "^1.4.3",
+    "multiaddr": "^10.0.1"
   }
 }
