@@ -2,9 +2,9 @@ import process from 'node:process'
 import { createLibp2p } from 'libp2p'
 import { tcp } from '@libp2p/tcp'
 import { noise } from '@chainsafe/libp2p-noise'
-import { mplex } from '@libp2p/mplex'
 import { multiaddr } from 'multiaddr'
 import { ping } from '@libp2p/ping'
+import { yamux } from '@chainsafe/libp2p-yamux'
 
 const node = await createLibp2p({
   addresses: {
@@ -13,7 +13,7 @@ const node = await createLibp2p({
   },
   transports: [tcp()],
   connectionEncryption: [noise()],
-  streamMuxers: [mplex()],
+  streamMuxers: [yamux()],
   services: {
     ping: ping({
       protocolPrefix: 'ipfs', // default
