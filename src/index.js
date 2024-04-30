@@ -5,6 +5,8 @@ import { noise } from '@chainsafe/libp2p-noise'
 import { multiaddr } from 'multiaddr'
 import { ping } from '@libp2p/ping'
 import { yamux } from '@chainsafe/libp2p-yamux'
+import { pubsubPeerDiscovery } from '@libp2p/pubsub-peer-discovery'
+import { gossipsub } from '@chainsafe/libp2p-gossipsub'
 
 const node = await createLibp2p({
   addresses: {
@@ -14,9 +16,11 @@ const node = await createLibp2p({
   transports: [tcp()],
   connectionEncryption: [noise()],
   streamMuxers: [yamux()],
+  peerDiscovery: [pubsubPeerDiscovery()],
   services: {
+    pubsub: gossipsub(),
     ping: ping({
-      protocolPrefix: 'ipfs', // default
+      protocolPrefix: 'ipfs'
     }),
   },
 })
@@ -31,14 +35,19 @@ node.getMultiaddrs().forEach((addr) => {
   console.log(addr.toString())
 })
 
-// ping peer if received multiaddr
-if (process.argv.length >= 3) {
-  const ma = multiaddr(process.argv[2])
-  console.log(`pinging remote peer at ${process.argv[2]}`)
-  const latency = await node.services.ping.ping(ma)
-  console.log(`pinged ${process.argv[2]} in ${latency}ms`)
+// If an address is provided via command line, dial to that node
+if (process.argv.length > 2) {
+  const remoteAddr = multiaddr(process.argv[2]);
+  console.log(`Trying to connect to ${remoteAddr.toString()}`);
+
+  try {
+    await node.dial(remoteAddr);
+    console.log('Connection established successfully');
+  } catch (error) {
+    console.error('Failed to connect:', error);
+  }
 } else {
-  console.log('no remote peer address given, skipping ping')
+  console.log('No remote peer address provided, please provide an address to connect.');
 }
 
 const stop = async () => {
